@@ -30,7 +30,7 @@ export const CertificatesPage = () => {
   return (
     <div className="bg-background flex-1 flex flex-col space-y-4 items-stretch p-4">
       <h2 className="font-bold text-3xl">My Certificates</h2>
-      <div className="grid grid-cols-4 gap-4 p-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
         {!user || status !== "IDLE"
           ? Array.from({ length: 4 }).map((_, i) => (
               <Skeleton className="w-full h-16 bg-gray-300" key={i} />

@@ -35,7 +35,7 @@ export const OverviewPage = () => {
   return (
     <div className="flex flex-col space-y-4 p-4 px-12 bg-background w-full flex-1">
       <h2 className="font-bold text-3xl">Events Overview</h2>
-      <div className="grid grid-cols-4 gap-12 w-full">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-12 w-full">
         <Card className="w-full">
           <CardHeader>
             <CardDescription>Events</CardDescription>

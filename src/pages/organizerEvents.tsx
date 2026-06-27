@@ -173,7 +173,7 @@ export const OrganizerEvents = () => {
   return (
     <div className="bg-background flex-1 flex flex-col space-y-4 items-stretch p-4">
       <h2 className="font-bold text-3xl">Events</h2>
-      <Card className=" mx-20">
+      <Card className=" md:mx-20">
         <CardContent>
           {status !== "IDLE" ? (
             <Skeleton className="bg-gray-300 h-full w-full" />

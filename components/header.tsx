@@ -3,6 +3,14 @@ import { useUser } from "@/hooks/use-user";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Profile } from "./ui/profile";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 const Menu = {
   PARTICIPANT: [
@@ -23,9 +31,9 @@ export const Header = () => {
 
   return (
     <div className="border-b flex space-x-8 p-4 items-center bg-background">
-      <h2 className="text-xl font-bold">Event Organizer</h2>
+      <h2 className="text-xl font-bold hidden md:block">Event Organizer</h2>
       <nav className="flex-1">
-        <ul className="p-2 flex space-x-8 text-sm">
+        <ul className="p-2 md:flex space-x-8 text-sm hidden">
           {["/sign-in", "/sign-up"].includes(pathname) ? (
             <></>
           ) : !user ? (
@@ -57,6 +65,39 @@ export const Header = () => {
             ))
           )}
         </ul>
+
+        {["/sign-in", "/sign-up"].includes(pathname) || !user ? (
+          <></>
+        ) : (
+          user.role && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="flex md:hidden" variant={"outline"}>
+                  {
+                    Menu[user.role].find((item) => item.href === pathname)
+                      ?.label
+                  }
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                {Menu[user.role].map(({ label, href }, i) => (
+                  <DropdownMenuItem key={i}>
+                    <a
+                      href={href}
+                      className={cn(
+                        "hover:text-foreground text-muted-foreground transition-all",
+                        pathname === href && "text-foreground",
+                      )}
+                    >
+                      {label}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        )}
       </nav>
       <Profile />
     </div>

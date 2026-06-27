@@ -192,8 +192,8 @@ export const RegistrationsPage = () => {
         </Empty>
       ) : (
         <div className="bg-background flex-1 flex flex-col space-y-4 items-stretch p-4">
-          <h2 className="font-bold text-3xl">Events</h2>
-          <Card className=" mx-20">
+          <h2 className="font-bold text-3xl">Registrations</h2>
+          <Card className=" md:mx-20">
             <CardContent>
               <Table>
                 <TableHeader>
