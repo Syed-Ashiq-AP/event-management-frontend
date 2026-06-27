@@ -163,7 +163,7 @@ export const LoginPage = () => {
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
                           aria-invalid={isInvalid}
-                          placeholder="Login button not working on mobile"
+                          placeholder="Password"
                           type="password"
                         />
                         {isInvalid && (
