@@ -125,8 +125,7 @@ export const OrganizerEvents = () => {
                   </DialogHeader>
                   <Scanner
                     onScan={async (result) => {
-                      const id = result.at(0)?.format;
-                      alert(JSON.stringify(result));
+                      const id = result.at(0)?.rawValue;
                       if (!id) {
                         toast.error("Failed to scan!");
                         return;
