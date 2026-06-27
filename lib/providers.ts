@@ -1,12 +1,14 @@
 import { createAuthClient } from "better-auth/client";
+const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:8000",
+  baseURL: API_URL.replace("/api", ""),
 });
 export const handleGithub = async (signUp: boolean = false) => {
   await authClient.signIn.social({
     provider: "github",
-    callbackURL: "http://localhost:5173/",
+    callbackURL: BASE_URL,
     requestSignUp: signUp,
   });
 };
@@ -14,7 +16,7 @@ export const handleGithub = async (signUp: boolean = false) => {
 export const handleGoogle = async (signUp: boolean = false) => {
   await authClient.signIn.social({
     provider: "google",
-    callbackURL: "http://localhost:5173/",
+    callbackURL: BASE_URL,
     requestSignUp: signUp,
   });
 };
