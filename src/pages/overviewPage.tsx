@@ -17,8 +17,6 @@ import {
   Cell,
   Pie,
   PieChart,
-  ResponsiveContainer,
-  type TooltipProps,
 } from "recharts";
 
 const chartConfig = {
@@ -181,26 +179,24 @@ export const OverviewPage = () => {
                 config={chartConfig}
                 className="mx-auto aspect-square max-h-[320px] w-full"
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <Pie
-                      data={chartData}
-                      dataKey="value"
-                      nameKey="metric"
-                      innerRadius={70}
-                      outerRadius={110}
-                      strokeWidth={5}
-                    >
-                      {chartData.map((entry) => (
-                        <Cell key={entry.metric} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <PieChart>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="metric"
+                    innerRadius={70}
+                    outerRadius={110}
+                    strokeWidth={5}
+                  >
+                    {chartData.map((entry) => (
+                      <Cell key={entry.metric} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                </PieChart>
               </ChartContainer>
             )}
           </CardContent>
@@ -231,7 +227,9 @@ export const OverviewPage = () => {
               </div>
               <div className="rounded-lg border border-border/60 p-4">
                 <p className="text-sm text-muted-foreground">Per event</p>
-                <p className="text-2xl font-semibold">{registrationsPerEvent}</p>
+                <p className="text-2xl font-semibold">
+                  {registrationsPerEvent}
+                </p>
               </div>
             </div>
           </CardContent>

@@ -180,7 +180,10 @@ export const LoginPage = () => {
               </Button>
               <p className="text-center text-sm text-muted-foreground">
                 Already signed up?{" "}
-                <Link to="/sign-up" className="font-medium text-foreground underline underline-offset-4">
+                <Link
+                  to="/sign-up"
+                  className="font-medium text-foreground underline underline-offset-4"
+                >
                   Sign up
                 </Link>
               </p>
