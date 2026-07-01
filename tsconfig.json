@@ -2,12 +2,14 @@
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.test.json" }
   ],
-      "compilerOptions": {
-        "module": "NodeNext",
+  "compilerOptions": {
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
+    "types": ["vitest"],
     "paths": {
       "@/*": ["./*"]
     },
