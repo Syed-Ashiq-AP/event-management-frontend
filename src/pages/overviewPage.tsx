@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/card";
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -180,6 +182,7 @@ export const OverviewPage = () => {
                     cursor={false}
                     content={<ChartTooltipContent hideLabel />}
                   />
+                  <ChartLegend content={<ChartLegendContent />} />
                   <Pie
                     data={chartData}
                     dataKey="value"
