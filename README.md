@@ -14,6 +14,9 @@ It is built using **React**, **TypeScript**, and **Vite**, with reusable compone
 - TypeScript
 - Vite
 - Better Auth Client
+- Vitest
+- React Testing Library
+- jsdom
 - CSS
 - Component-based Architecture
 
@@ -204,6 +207,55 @@ npm run dev
 
 ```bash
 npm run build
+```
+
+---
+
+# Testing
+
+The frontend uses **Vitest** with **React Testing Library** and **jsdom** for component and page testing.
+
+Test configuration:
+
+- `vite.config.ts` configures Vitest with the `jsdom` environment.
+- `src/__test__/setup.ts` loads `@testing-library/jest-dom`.
+- `tsconfig.test.json` gives test files access to Vitest globals, jest-dom matchers, app globals, and the `@/*` path alias.
+- `tsconfig.app.json` excludes test files from the production TypeScript build.
+
+Current test coverage includes:
+
+- App unauthenticated redirect flow
+- Login page rendering and credential submit
+- Sign-up page rendering and role selection before social sign-up
+- Header navigation for participant and organizer roles
+- Events page participant and organizer views
+- Event creation form submit
+- Registrations page rendering
+- Certificates page rendering
+- Organizer overview analytics rendering
+
+Run tests once:
+
+```bash
+npm run test:run
+```
+
+Run tests in watch mode:
+
+```bash
+npm run test
+```
+
+Run tests with coverage:
+
+```bash
+npm run coverage
+```
+
+Type-check test files:
+
+```bash
+npx tsc -p tsconfig.test.json --noEmit
 ```
 
 ---
