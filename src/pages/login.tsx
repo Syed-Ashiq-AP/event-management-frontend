@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/field";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { handleGithub, handleGoogle } from "@/lib/providers";
 import { useEffect } from "react";
 import { useUser } from "@/hooks/use-user";
@@ -177,6 +178,12 @@ export const LoginPage = () => {
               <Button className="my-4 w-full" size={"lg"} type="submit">
                 Log in
               </Button>
+              <p className="text-center text-sm text-muted-foreground">
+                Already signed up?{" "}
+                <Link to="/sign-up" className="font-medium text-foreground underline underline-offset-4">
+                  Sign up
+                </Link>
+              </p>
             </form>
           </div>
         </CardContent>

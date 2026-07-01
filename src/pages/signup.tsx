@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { handleGithub, handleGoogle } from "@/lib/providers";
 import { useUser } from "@/hooks/use-user";
 
@@ -266,6 +267,12 @@ export const SignUpPage = () => {
               <Button className="my-4 w-full" size={"lg"} type="submit">
                 Sign Up
               </Button>
+              <p className="text-center text-sm text-muted-foreground">
+                Already logged in?{" "}
+                <Link to="/sign-in" className="font-medium text-foreground underline underline-offset-4">
+                  Log in
+                </Link>
+              </p>
             </form>
           </div>
         </CardContent>
