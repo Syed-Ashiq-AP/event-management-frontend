@@ -13,11 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/hooks/use-user";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Cell,
-  Pie,
-  PieChart,
-} from "recharts";
+import { Cell, Pie, PieChart } from "recharts";
 
 const chartConfig = {
   events: {

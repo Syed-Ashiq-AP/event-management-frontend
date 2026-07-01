@@ -35,7 +35,9 @@ describe("OverviewPage", () => {
     expect(await screen.findByText("3")).toBeTruthy();
     expect(screen.getByText("12")).toBeTruthy();
     expect(screen.getByText("8")).toBeTruthy();
-    expect(screen.getByText("4", { selector: "[data-slot='card-title']" })).toBeTruthy();
+    expect(
+      screen.getByText("4", { selector: "[data-slot='card-title']" }),
+    ).toBeTruthy();
     expect(screen.getAllByText("67%").length).toBeGreaterThan(0);
     expect(screen.getAllByText("4.0").length).toBeGreaterThan(0);
     expect(screen.getByText(/pending check-ins/i)).toBeTruthy();
