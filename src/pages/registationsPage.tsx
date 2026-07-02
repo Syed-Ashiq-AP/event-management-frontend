@@ -24,6 +24,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -43,11 +44,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { MdEmojiEvents } from "react-icons/md";
 import QRCode from "react-qr-code";
+import { filterRows, getSortLabel, sortRows, type SortConfig } from "@/lib/data-table";
 
 export const RegistrationsPage = () => {
   const { getRegistrations, cancelEvent, user, status } = useUser();
 
   const [registrations, setRegistrations] = useState<UserRegistration[]>([]);
+  const [registrationSearch, setRegistrationSearch] = useState("");
+  const [registrationSort, setRegistrationSort] = useState<SortConfig>({
+    field: "eventDate",
+    direction: "desc",
+  });
 
   const didMount = useRef(false);
 
@@ -62,6 +69,27 @@ export const RegistrationsPage = () => {
     fetchRegistrations();
     didMount.current = true;
   }, [user]);
+
+  const visibleRegistrations = React.useMemo(() => {
+    const filteredRegistrations = filterRows(
+      registrations,
+      registrationSearch,
+      [
+        (registration) => registration.event.title,
+        (registration) => registration.event.location,
+        (registration) => registration.event.status,
+        (registration) => new Date(registration.event.eventDate).toLocaleString(),
+        (registration) => registration.event.description ?? "",
+      ],
+    );
+
+    return sortRows(filteredRegistrations, registrationSort, {
+      title: (registration) => registration.event.title,
+      eventDate: (registration) => new Date(registration.event.eventDate),
+      location: (registration) => registration.event.location,
+      status: (registration) => registration.event.status,
+    });
+  }, [registrations, registrationSearch, registrationSort]);
 
   const columns: ColumnDef<UserRegistration>[] = [
     {
@@ -159,7 +187,7 @@ export const RegistrationsPage = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: registrations,
+    data: visibleRegistrations,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
@@ -195,6 +223,56 @@ export const RegistrationsPage = () => {
           <h2 className="font-bold text-3xl">Registrations</h2>
           <Card className=" md:mx-20">
             <CardContent>
+              <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <Input
+                  value={registrationSearch}
+                  onChange={(event) => setRegistrationSearch(event.target.value)}
+                  placeholder="Search registrations..."
+                  className="md:max-w-sm"
+                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between md:min-w-40">
+                      {getSortLabel(registrationSort, {
+                        title: "Title",
+                        eventDate: "Date",
+                        location: "Location",
+                        status: "Status",
+                      })}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "title", direction: "asc" })}>
+                      Title Asc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "title", direction: "desc" })}>
+                      Title Desc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "eventDate", direction: "asc" })}>
+                      Date Asc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "eventDate", direction: "desc" })}>
+                      Date Desc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "location", direction: "asc" })}>
+                      Location Asc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "location", direction: "desc" })}>
+                      Location Desc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "status", direction: "asc" })}>
+                      Status Asc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "status", direction: "desc" })}>
+                      Status Desc
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRegistrationSort(null)}>
+                      Clear sort
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (

@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { DataTableToolbar } from "@/components/data-table-toolbar";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import {
   Dialog,
@@ -46,6 +47,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { MdEmojiEvents } from "react-icons/md";
+import { filterRows, sortRows, type SortConfig } from "@/lib/data-table";
 
 export const OrganizerEvents = () => {
   const { getEvents, getEventParticipants, cancelEvent, setAttended, status } =
@@ -53,8 +55,18 @@ export const OrganizerEvents = () => {
   const didMount = useRef(false);
 
   const [events, setEvents] = useState<UserEvent[]>([]);
+  const [eventSearch, setEventSearch] = useState("");
+  const [eventSort, setEventSort] = useState<SortConfig>({
+    field: "eventDate",
+    direction: "desc",
+  });
   const [participantDialogOpen, setParticipantDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<UserEvent | null>(null);
+  const [participantSearch, setParticipantSearch] = useState("");
+  const [participantSort, setParticipantSort] = useState<SortConfig>({
+    field: "registeredAt",
+    direction: "desc",
+  });
   const [participants, setParticipants] = useState<UserEventParticipant[]>([]);
   const [participantsLoading, setParticipantsLoading] = useState(false);
 
@@ -72,6 +84,8 @@ export const OrganizerEvents = () => {
 
   const openParticipantsDialog = async (event: UserEvent) => {
     setSelectedEvent(event);
+    setParticipantSearch("");
+    setParticipantSort({ field: "registeredAt", direction: "desc" });
     setParticipantDialogOpen(true);
     setParticipantsLoading(true);
     try {
@@ -81,6 +95,38 @@ export const OrganizerEvents = () => {
       setParticipantsLoading(false);
     }
   };
+
+  const visibleEvents = React.useMemo(() => {
+    const filteredEvents = filterRows(events, eventSearch, [
+      (event) => event.title,
+      (event) => event.location,
+      (event) => event.status,
+      (event) => new Date(event.eventDate).toLocaleString(),
+    ]);
+
+    return sortRows(filteredEvents, eventSort, {
+      title: (event) => event.title,
+      eventDate: (event) => new Date(event.eventDate),
+      location: (event) => event.location,
+      status: (event) => event.status,
+    });
+  }, [events, eventSearch, eventSort]);
+
+  const visibleParticipants = React.useMemo(() => {
+    const filteredParticipants = filterRows(participants, participantSearch, [
+      (participant) => participant.user.name,
+      (participant) => participant.user.email,
+      (participant) => (participant.attended ? "marked" : "pending"),
+      (participant) => new Date(participant.registeredAt).toLocaleString(),
+    ]);
+
+    return sortRows(filteredParticipants, participantSort, {
+      name: (participant) => participant.user.name,
+      email: (participant) => participant.user.email,
+      registeredAt: (participant) => new Date(participant.registeredAt),
+      attended: (participant) => participant.attended,
+    });
+  }, [participants, participantSearch, participantSort]);
 
   const columns: ColumnDef<UserEvent>[] = [
     {
@@ -195,7 +241,7 @@ export const OrganizerEvents = () => {
   ];
 
   const table = useReactTable({
-    data: events,
+    data: visibleEvents,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
@@ -230,54 +276,91 @@ export const OrganizerEvents = () => {
               </EmptyContent>
             </Empty>
           ) : (
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
+            <>
+              <DataTableToolbar
+                searchValue={eventSearch}
+                onSearchValueChange={setEventSearch}
+                searchPlaceholder="Search events..."
+                currentSortFieldLabel={
+                  eventSort
+                    ? {
+                        title: "Title",
+                        eventDate: "Date",
+                        location: "Location",
+                        status: "Status",
+                      }[eventSort.field]
+                    : undefined
+                }
+                currentSortDirection={eventSort?.direction}
+                sortOptions={[
+                  { field: "title", label: "Title" },
+                  { field: "eventDate", label: "Date" },
+                  { field: "location", label: "Location" },
+                  { field: "status", label: "Status" },
+                ]}
+                onSortFieldChange={(field) =>
+                  setEventSort({
+                    field,
+                    direction: eventSort?.direction ?? "asc",
+                  })
+                }
+                onSortDirectionChange={(direction) =>
+                  setEventSort({
+                    field: eventSort?.field ?? "eventDate",
+                    direction,
+                  })
+                }
+                onClearSort={() => setEventSort(null)}
+              />
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </TableHead>
+                        );
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </>
           )}
         </CardContent>
       </Card>
@@ -310,34 +393,81 @@ export const OrganizerEvents = () => {
               </EmptyHeader>
             </Empty>
           ) : (
-            <ScrollArea className="max-h-[60vh] rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Registered</TableHead>
-                    <TableHead>Attendance</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {participants.map((participant) => (
-                    <TableRow key={participant.id}>
-                      <TableCell className="font-medium">
-                        {participant.user.name}
-                      </TableCell>
-                      <TableCell>{participant.user.email}</TableCell>
-                      <TableCell>
-                        {new Date(participant.registeredAt).toLocaleString()}
-                      </TableCell>
-                      <TableCell>
-                        {participant.attended ? "Marked" : "Pending"}
-                      </TableCell>
+            <>
+              <DataTableToolbar
+                searchValue={participantSearch}
+                onSearchValueChange={setParticipantSearch}
+                searchPlaceholder="Search participants..."
+                currentSortFieldLabel={
+                  participantSort
+                    ? {
+                        name: "Name",
+                        email: "Email",
+                        registeredAt: "Registered",
+                        attended: "Attendance",
+                      }[participantSort.field]
+                    : undefined
+                }
+                currentSortDirection={participantSort?.direction}
+                sortOptions={[
+                  { field: "name", label: "Name" },
+                  { field: "email", label: "Email" },
+                  { field: "registeredAt", label: "Registered" },
+                  { field: "attended", label: "Attendance" },
+                ]}
+                onSortFieldChange={(field) =>
+                  setParticipantSort({
+                    field,
+                    direction: participantSort?.direction ?? "asc",
+                  })
+                }
+                onSortDirectionChange={(direction) =>
+                  setParticipantSort({
+                    field: participantSort?.field ?? "registeredAt",
+                    direction,
+                  })
+                }
+                onClearSort={() => setParticipantSort(null)}
+              />
+              <ScrollArea className="max-h-[60vh] rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Registered</TableHead>
+                      <TableHead>Attendance</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ScrollArea>
+                  </TableHeader>
+                  <TableBody>
+                    {visibleParticipants.length ? (
+                      visibleParticipants.map((participant) => (
+                        <TableRow key={participant.id}>
+                          <TableCell className="font-medium">
+                            {participant.user.name}
+                          </TableCell>
+                          <TableCell>{participant.user.email}</TableCell>
+                          <TableCell>
+                            {new Date(
+                              participant.registeredAt,
+                            ).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            {participant.attended ? "Marked" : "Pending"}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="h-24 text-center">
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </>
           )}
         </DialogContent>
       </Dialog>

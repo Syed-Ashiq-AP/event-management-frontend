@@ -50,6 +50,12 @@ describe("CertificatesPage", () => {
     render(<CertificatesPage />);
 
     expect(screen.getByText(/my certificates/i)).toBeTruthy();
+    expect(
+      screen.getByPlaceholderText(/search certificates/i),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: /date/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /asc/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /desc/i })).toBeTruthy();
     expect(await screen.findByText("Testing Masterclass")).toBeTruthy();
     expect(screen.getByText(/conference hall/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /download/i })).toBeTruthy();
