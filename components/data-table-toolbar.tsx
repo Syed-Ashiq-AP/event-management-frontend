@@ -63,7 +63,9 @@ export const DataTableToolbar = ({
                 {option.label}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuItem onSelect={onClearSort}>Clear sort</DropdownMenuItem>
+            <DropdownMenuItem onSelect={onClearSort}>
+              Clear sort
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <div className="flex rounded-md border border-border p-1">

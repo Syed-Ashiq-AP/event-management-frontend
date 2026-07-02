@@ -29,7 +29,7 @@ const normalizeSearchValue = (value: unknown) => {
   return String(value ?? "");
 };
 
-export const filterRows = <T,>(
+export const filterRows = <T>(
   rows: T[],
   query: string,
   extractors: Array<(row: T) => unknown>,
@@ -42,12 +42,14 @@ export const filterRows = <T,>(
 
   return rows.filter((row) =>
     extractors.some((extract) =>
-      normalizeSearchValue(extract(row)).toLowerCase().includes(normalizedQuery),
+      normalizeSearchValue(extract(row))
+        .toLowerCase()
+        .includes(normalizedQuery),
     ),
   );
 };
 
-export const sortRows = <T,>(
+export const sortRows = <T>(
   rows: T[],
   sort: SortConfig,
   accessors: Record<string, (row: T) => unknown>,

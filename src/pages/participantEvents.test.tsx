@@ -40,9 +40,7 @@ describe("ParticipantEvents", () => {
     );
 
     expect(await screen.findByText("Campus Hackathon")).toBeTruthy();
-    expect(
-      screen.getByPlaceholderText(/search events/i),
-    ).toBeTruthy();
+    expect(screen.getByPlaceholderText(/search events/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /date/i })).toBeTruthy();
     expect(screen.getByRole("button", { name: /asc/i })).toBeTruthy();
     expect(screen.getByRole("button", { name: /desc/i })).toBeTruthy();

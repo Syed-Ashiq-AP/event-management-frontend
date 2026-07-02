@@ -92,38 +92,40 @@ export const CertificatesPage = () => {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
-        {!user || status !== "IDLE"
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton className="w-full h-16 bg-gray-300" key={i} />
-            ))
-          : visibleCertificates.length === 0 ? (
-              <div className="col-span-full rounded-md border p-6 text-center text-sm text-muted-foreground">
-                No results.
-              </div>
-            ) : visibleCertificates.map((certificate, i) => {
-              const { event } = certificate;
-              const eventDate = new Date(event.eventDate).toLocaleString();
-              return (
-                <Card key={i}>
-                  <CardHeader>
-                    <CardTitle>{event.title}</CardTitle>
-                    <CardDescription>
-                      {eventDate} - {event.location}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex w-full justify-end">
-                      <Button
-                        size={"lg"}
-                        onClick={() => downloadCertificate(user, certificate)}
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+        {!user || status !== "IDLE" ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton className="w-full h-16 bg-gray-300" key={i} />
+          ))
+        ) : visibleCertificates.length === 0 ? (
+          <div className="col-span-full rounded-md border p-6 text-center text-sm text-muted-foreground">
+            No results.
+          </div>
+        ) : (
+          visibleCertificates.map((certificate, i) => {
+            const { event } = certificate;
+            const eventDate = new Date(event.eventDate).toLocaleString();
+            return (
+              <Card key={i}>
+                <CardHeader>
+                  <CardTitle>{event.title}</CardTitle>
+                  <CardDescription>
+                    {eventDate} - {event.location}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex w-full justify-end">
+                    <Button
+                      size={"lg"}
+                      onClick={() => downloadCertificate(user, certificate)}
+                    >
+                      Download
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
       </div>
     </div>
   );

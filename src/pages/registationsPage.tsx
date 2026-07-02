@@ -44,7 +44,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { MdEmojiEvents } from "react-icons/md";
 import QRCode from "react-qr-code";
-import { filterRows, getSortLabel, sortRows, type SortConfig } from "@/lib/data-table";
+import {
+  filterRows,
+  getSortLabel,
+  sortRows,
+  type SortConfig,
+} from "@/lib/data-table";
 
 export const RegistrationsPage = () => {
   const { getRegistrations, cancelEvent, user, status } = useUser();
@@ -78,7 +83,8 @@ export const RegistrationsPage = () => {
         (registration) => registration.event.title,
         (registration) => registration.event.location,
         (registration) => registration.event.status,
-        (registration) => new Date(registration.event.eventDate).toLocaleString(),
+        (registration) =>
+          new Date(registration.event.eventDate).toLocaleString(),
         (registration) => registration.event.description ?? "",
       ],
     );
@@ -226,13 +232,18 @@ export const RegistrationsPage = () => {
               <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <Input
                   value={registrationSearch}
-                  onChange={(event) => setRegistrationSearch(event.target.value)}
+                  onChange={(event) =>
+                    setRegistrationSearch(event.target.value)
+                  }
                   placeholder="Search registrations..."
                   className="md:max-w-sm"
                 />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between md:min-w-40">
+                    <Button
+                      variant="outline"
+                      className="justify-between md:min-w-40"
+                    >
                       {getSortLabel(registrationSort, {
                         title: "Title",
                         eventDate: "Date",
@@ -243,31 +254,89 @@ export const RegistrationsPage = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "title", direction: "asc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "title",
+                          direction: "asc",
+                        })
+                      }
+                    >
                       Title Asc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "title", direction: "desc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "title",
+                          direction: "desc",
+                        })
+                      }
+                    >
                       Title Desc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "eventDate", direction: "asc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "eventDate",
+                          direction: "asc",
+                        })
+                      }
+                    >
                       Date Asc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "eventDate", direction: "desc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "eventDate",
+                          direction: "desc",
+                        })
+                      }
+                    >
                       Date Desc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "location", direction: "asc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "location",
+                          direction: "asc",
+                        })
+                      }
+                    >
                       Location Asc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "location", direction: "desc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "location",
+                          direction: "desc",
+                        })
+                      }
+                    >
                       Location Desc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "status", direction: "asc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "status",
+                          direction: "asc",
+                        })
+                      }
+                    >
                       Status Asc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort({ field: "status", direction: "desc" })}>
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        setRegistrationSort({
+                          field: "status",
+                          direction: "desc",
+                        })
+                      }
+                    >
                       Status Desc
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setRegistrationSort(null)}>
+                    <DropdownMenuItem
+                      onSelect={() => setRegistrationSort(null)}
+                    >
                       Clear sort
                     </DropdownMenuItem>
                   </DropdownMenuContent>
