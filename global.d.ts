@@ -12,6 +12,21 @@ type UserEvent = {
   registrations: { id: string }[];
 };
 
+type UserEventParticipant = {
+  id: string;
+  userId: string;
+  eventId: string;
+  attended: boolean;
+  registeredAt: Date;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+    role: "PARTICIPANT" | "ORGANIZER" | null;
+  };
+};
+
 type EventForm = {
   title: string;
   description: string;

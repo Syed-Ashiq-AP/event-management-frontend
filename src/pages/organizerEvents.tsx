@@ -36,6 +36,7 @@ import { EventForm } from "@/components/forms/event";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Empty,
   EmptyContent,
@@ -47,10 +48,15 @@ import {
 import { MdEmojiEvents } from "react-icons/md";
 
 export const OrganizerEvents = () => {
-  const { getEvents, cancelEvent, setAttended, status } = useUser();
+  const { getEvents, getEventParticipants, cancelEvent, setAttended, status } =
+    useUser();
   const didMount = useRef(false);
 
   const [events, setEvents] = useState<UserEvent[]>([]);
+  const [participantDialogOpen, setParticipantDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<UserEvent | null>(null);
+  const [participants, setParticipants] = useState<UserEventParticipant[]>([]);
+  const [participantsLoading, setParticipantsLoading] = useState(false);
 
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -63,6 +69,18 @@ export const OrganizerEvents = () => {
     fetchEvents();
     didMount.current = true;
   }, []);
+
+  const openParticipantsDialog = async (event: UserEvent) => {
+    setSelectedEvent(event);
+    setParticipantDialogOpen(true);
+    setParticipantsLoading(true);
+    try {
+      const eventParticipants = await getEventParticipants(event.id);
+      setParticipants(eventParticipants);
+    } finally {
+      setParticipantsLoading(false);
+    }
+  };
 
   const columns: ColumnDef<UserEvent>[] = [
     {
@@ -91,7 +109,11 @@ export const OrganizerEvents = () => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                aria-label="Open event actions"
+              >
                 <IoEllipsisHorizontal />
               </Button>
             </DropdownMenuTrigger>
@@ -99,7 +121,7 @@ export const OrganizerEvents = () => {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant={"ghost"} className="w-full  justify-start">
+                  <Button variant={"ghost"} className="w-full justify-start">
                     Edit
                   </Button>
                 </DialogTrigger>
@@ -114,9 +136,17 @@ export const OrganizerEvents = () => {
                   />
                 </DialogContent>
               </Dialog>
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  void openParticipantsDialog(row.original);
+                }}
+              >
+                Participants
+              </DropdownMenuItem>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant={"ghost"} className="w-full  justify-start">
+                  <Button variant={"ghost"} className="w-full justify-start">
                     Attendance
                   </Button>
                 </DialogTrigger>
@@ -251,6 +281,66 @@ export const OrganizerEvents = () => {
           )}
         </CardContent>
       </Card>
+      <Dialog
+        open={participantDialogOpen}
+        onOpenChange={setParticipantDialogOpen}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Participants{selectedEvent ? ` - ${selectedEvent.title}` : ""}
+            </DialogTitle>
+            <DialogDescription>
+              People registered for this event, sorted by registration time.
+            </DialogDescription>
+          </DialogHeader>
+          {participantsLoading ? (
+            <div className="space-y-3 py-4">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ) : participants.length === 0 ? (
+            <Empty className="py-10">
+              <EmptyHeader>
+                <EmptyTitle>No participants yet</EmptyTitle>
+                <EmptyDescription>
+                  Nobody has registered for this event yet.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <ScrollArea className="max-h-[60vh] rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Registered</TableHead>
+                    <TableHead>Attendance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {participants.map((participant) => (
+                    <TableRow key={participant.id}>
+                      <TableCell className="font-medium">
+                        {participant.user.name}
+                      </TableCell>
+                      <TableCell>{participant.user.email}</TableCell>
+                      <TableCell>
+                        {new Date(participant.registeredAt).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {participant.attended ? "Marked" : "Pending"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

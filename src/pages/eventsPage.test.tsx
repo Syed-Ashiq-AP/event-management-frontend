@@ -1,9 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { EventsPage } from "./eventsPage";
 
 const getEvents = vi.fn();
+const getEventParticipants = vi.fn();
 const registerEvent = vi.fn();
 let currentUser: { role: "PARTICIPANT" | "ORGANIZER" } | undefined;
 
@@ -28,6 +30,7 @@ vi.mock("@/hooks/use-user", () => ({
     user: currentUser,
     status: "IDLE",
     getEvents,
+    getEventParticipants,
     registerEvent,
     cancelEvent: vi.fn(),
     setAttended: vi.fn(),
@@ -38,6 +41,22 @@ describe("EventsPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getEvents.mockResolvedValue([event]);
+    getEventParticipants.mockResolvedValue([
+      {
+        id: "registration-1",
+        userId: "participant-1",
+        eventId: event.id,
+        attended: false,
+        registeredAt: new Date("2026-08-01T10:00:00.000Z"),
+        user: {
+          id: "participant-1",
+          name: "Participant One",
+          email: "participant@example.com",
+          image: null,
+          role: "PARTICIPANT",
+        },
+      },
+    ]);
     currentUser = undefined;
   });
 
@@ -68,5 +87,27 @@ describe("EventsPage", () => {
     await waitFor(() => expect(getEvents).toHaveBeenCalled());
     expect(screen.getByRole("columnheader", { name: /title/i })).toBeTruthy();
     expect(screen.getByRole("columnheader", { name: /status/i })).toBeTruthy();
+  });
+
+  it("opens the participants dialog from the actions menu", async () => {
+    currentUser = { role: "ORGANIZER" };
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <EventsPage />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText("Frontend Testing Day")).toBeTruthy();
+
+    await user.click(
+      screen.getByRole("button", { name: /open event actions/i }),
+    );
+    await user.click(screen.getByText(/participants/i));
+
+    expect(await screen.findByText("Participant One")).toBeTruthy();
+    expect(screen.getByText("participant@example.com")).toBeTruthy();
+    expect(getEventParticipants).toHaveBeenCalledWith("event-1");
   });
 });

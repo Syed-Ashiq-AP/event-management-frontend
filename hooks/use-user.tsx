@@ -18,6 +18,7 @@ type UserContext = {
   user?: User;
   getRegistrations: () => Promise<UserRegistration[]>;
   getEvents: () => Promise<UserEvent[]>;
+  getEventParticipants: (eventId: string) => Promise<UserEventParticipant[]>;
   getAnalytics: () => Promise<{
     eventsCount: 0;
     registrationsCount: 0;
@@ -86,6 +87,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       return [] as UserEvent[];
     }
   }, [user]);
+
+  const getEventParticipants = useCallback(
+    async (eventId: string) => {
+      const { data } = await api.get(
+        `${API_URL}/events/${eventId}/participants`,
+      );
+      if (data.success) {
+        return data.participants as UserEventParticipant[];
+      } else {
+        toast(data.error);
+        return [] as UserEventParticipant[];
+      }
+    },
+    [user],
+  );
 
   const getAnalytics = useCallback(async () => {
     setStatus("LOADING");
@@ -225,6 +241,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       user,
       getRegistrations,
       getEvents,
+      getEventParticipants,
       getAnalytics,
       createEvent,
       cancelEvent,
@@ -239,6 +256,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     [
       getRegistrations,
       getEvents,
+      getEventParticipants,
       getAnalytics,
       createEvent,
       cancelEvent,
