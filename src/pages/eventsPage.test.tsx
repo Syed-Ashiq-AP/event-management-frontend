@@ -18,6 +18,9 @@ const event = {
   status: "OPEN",
   eventDate: "2026-08-20T10:00:00.000Z",
   userId: "user-1",
+  user: {
+    name: "Organizer One",
+  },
   registrations: [],
 } satisfies UserEvent;
 
@@ -86,7 +89,11 @@ describe("EventsPage", () => {
     expect(await screen.findByText("Frontend Testing Day")).toBeTruthy();
     await waitFor(() => expect(getEvents).toHaveBeenCalled());
     expect(screen.getByRole("columnheader", { name: /title/i })).toBeTruthy();
+    expect(
+      screen.getByRole("columnheader", { name: /organizer/i }),
+    ).toBeTruthy();
     expect(screen.getByRole("columnheader", { name: /status/i })).toBeTruthy();
+    expect(screen.getByText("Organizer One")).toBeTruthy();
   });
 
   it("opens the participants dialog from the actions menu", async () => {

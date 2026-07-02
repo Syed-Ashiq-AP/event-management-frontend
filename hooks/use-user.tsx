@@ -120,12 +120,28 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     async (value: EventForm) => {
       if (!user) return;
       setStatus("LOADING");
-      const { data } = await api.post(`${API_URL}/events`, {
-        userId: user.id,
-        ...value,
-      });
-      setStatus("IDLE");
-      return data.success;
+      try {
+        const { data } = await api.post(`${API_URL}/events`, {
+          userId: user.id,
+          ...value,
+        });
+        if (!data.success) {
+          toast(data.error ?? "Failed to create event");
+        }
+        return data.success;
+      } catch (error) {
+        const message = axios.isAxiosError(error)
+          ? error.response?.data?.error
+          : undefined;
+        toast(
+          message === "EVENT_ALREADY_EXISTS"
+            ? "An event with the same title, date, and location already exists."
+            : "Failed to create event",
+        );
+        return false;
+      } finally {
+        setStatus("IDLE");
+      }
     },
     [user],
   );
@@ -145,13 +161,29 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     async (value: EventUpdate) => {
       if (!user) return;
       setStatus("LOADING");
-      const { id: _, ...formValue } = value;
-      const { data } = await api.put(
-        `${API_URL}/events/${value.id}`,
-        formValue,
-      );
-      setStatus("IDLE");
-      return data.success;
+      try {
+        const { id: _, ...formValue } = value;
+        const { data } = await api.put(
+          `${API_URL}/events/${value.id}`,
+          formValue,
+        );
+        if (!data.success) {
+          toast(data.error ?? "Failed to update event");
+        }
+        return data.success;
+      } catch (error) {
+        const message = axios.isAxiosError(error)
+          ? error.response?.data?.error
+          : undefined;
+        toast(
+          message === "EVENT_ALREADY_EXISTS"
+            ? "An event with the same title, date, and location already exists."
+            : "Failed to update event",
+        );
+        return false;
+      } finally {
+        setStatus("IDLE");
+      }
     },
     [user],
   );

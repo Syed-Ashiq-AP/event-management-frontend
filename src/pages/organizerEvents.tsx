@@ -99,6 +99,7 @@ export const OrganizerEvents = () => {
   const visibleEvents = React.useMemo(() => {
     const filteredEvents = filterRows(events, eventSearch, [
       (event) => event.title,
+      (event) => event.user.name,
       (event) => event.location,
       (event) => event.status,
       (event) => new Date(event.eventDate).toLocaleString(),
@@ -106,6 +107,7 @@ export const OrganizerEvents = () => {
 
     return sortRows(filteredEvents, eventSort, {
       title: (event) => event.title,
+      organizer: (event) => event.user.name,
       eventDate: (event) => new Date(event.eventDate),
       location: (event) => event.location,
       status: (event) => event.status,
@@ -132,6 +134,11 @@ export const OrganizerEvents = () => {
     {
       accessorKey: "title",
       header: "Title",
+    },
+    {
+      accessorKey: "user.name",
+      header: "Organizer",
+      cell: ({ row }) => row.original.user.name,
     },
     {
       accessorKey: "eventDate",
@@ -285,6 +292,7 @@ export const OrganizerEvents = () => {
                   eventSort
                     ? {
                         title: "Title",
+                        organizer: "Organizer",
                         eventDate: "Date",
                         location: "Location",
                         status: "Status",
@@ -294,6 +302,7 @@ export const OrganizerEvents = () => {
                 currentSortDirection={eventSort?.direction}
                 sortOptions={[
                   { field: "title", label: "Title" },
+                  { field: "organizer", label: "Organizer" },
                   { field: "eventDate", label: "Date" },
                   { field: "location", label: "Location" },
                   { field: "status", label: "Status" },

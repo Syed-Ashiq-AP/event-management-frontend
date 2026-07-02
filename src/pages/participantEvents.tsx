@@ -47,6 +47,7 @@ export const ParticipantEvents = () => {
   const visibleEvents = useMemo(() => {
     const filteredEvents = filterRows(events, eventSearch, [
       (event) => event.title,
+      (event) => event.user.name,
       (event) => event.location,
       (event) => event.description,
       (event) => new Date(event.eventDate).toLocaleString(),
@@ -55,6 +56,7 @@ export const ParticipantEvents = () => {
 
     return sortRows(filteredEvents, eventSort, {
       title: (event) => event.title,
+      organizer: (event) => event.user.name,
       eventDate: (event) => new Date(event.eventDate),
       location: (event) => event.location,
       registered: (event) => event.registrations.length,
@@ -81,6 +83,7 @@ export const ParticipantEvents = () => {
             eventSort
               ? {
                   title: "Title",
+                  organizer: "Organizer",
                   eventDate: "Date",
                   location: "Location",
                   registered: "Registration",
@@ -90,6 +93,7 @@ export const ParticipantEvents = () => {
           currentSortDirection={eventSort?.direction}
           sortOptions={[
             { field: "title", label: "Title" },
+            { field: "organizer", label: "Organizer" },
             { field: "eventDate", label: "Date" },
             { field: "location", label: "Location" },
             { field: "registered", label: "Registration" },
@@ -124,7 +128,7 @@ export const ParticipantEvents = () => {
                 <CardHeader>
                   <CardTitle>{event.title}</CardTitle>
                   <CardDescription>
-                    {eventDate} - {event.location}
+                    {eventDate} - {event.location} · {event.user.name}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -147,6 +151,10 @@ export const ParticipantEvents = () => {
                           <span>
                             <b>Venue: </b>
                             {event.location}
+                          </span>
+                          <span>
+                            <b>Organizer: </b>
+                            {event.user.name}
                           </span>
                         </div>
                         <span>{event.description}</span>

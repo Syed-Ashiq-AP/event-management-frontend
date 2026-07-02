@@ -9,6 +9,9 @@ type UserEvent = {
   status: Status;
   eventDate: string;
   userId: string;
+  user: {
+    name: string;
+  };
   registrations: { id: string }[];
 };
 
