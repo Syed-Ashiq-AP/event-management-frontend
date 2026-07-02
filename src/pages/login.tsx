@@ -74,6 +74,74 @@ export const LoginPage = () => {
     const error = searchParams.get("error");
     if (!error) return;
     switch (error) {
+      case "invalid_callback_request":
+        toast.error("Invalid sign-in callback. Please try again.");
+        break;
+
+      case "invalid_code":
+        toast.error("Invalid or expired sign-in code. Please try again.");
+        break;
+
+      case "internal_server_error":
+        toast.error("The server could not complete sign in. Please try again.");
+        break;
+
+      case "state_not_found":
+        toast.error("Your sign-in session expired. Please try again.");
+        break;
+
+      case "state_invalid":
+        toast.error("Invalid sign-in session. Please try again.");
+        break;
+
+      case "state_mismatch":
+        toast.error("Sign-in session mismatch. Please start again.");
+        break;
+
+      case "no_code":
+        toast.error("Missing sign-in code. Please try again.");
+        break;
+
+      case "no_callback_url":
+        toast.error("Missing callback URL. Please contact support.");
+        break;
+
+      case "oauth_provider_not_found":
+        toast.error("Sign-in provider not found. Please try another provider.");
+        break;
+
+      case "email_not_found":
+        toast.error("We could not find an email from this provider.");
+        break;
+
+      case "email_doesn't_match":
+        toast.error("Provider email does not match this account.");
+        break;
+
+      case "unable_to_get_user_info":
+        toast.error("Could not get your profile from the provider.");
+        break;
+
+      case "unable_to_link_account":
+        toast.error("Could not link this provider to your account.");
+        break;
+
+      case "unable_to_create_user":
+        toast.error("Could not create your account. Please try again.");
+        break;
+
+      case "unable_to_create_session":
+        toast.error("Could not create your session. Please try again.");
+        break;
+
+      case "account_not_linked":
+        toast.error("This provider is not linked to your account.");
+        break;
+
+      case "account_already_linked_to_different_user":
+        toast.error("This provider is already linked to another account.");
+        break;
+
       case "signup_disabled":
         toast.error("No account found. Please sign up first.");
         break;

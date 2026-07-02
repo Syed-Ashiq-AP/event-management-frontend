@@ -27,6 +27,7 @@ import { IoEllipsisHorizontal } from "react-icons/io5";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -122,6 +123,10 @@ export const OrganizerEvents = () => {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Event Attendance</DialogTitle>
+                    <DialogDescription>
+                      Use Mobile Browser to access web cam and scan QR
+                      Codes{" "}
+                    </DialogDescription>
                   </DialogHeader>
                   <Scanner
                     onScan={async (result) => {
