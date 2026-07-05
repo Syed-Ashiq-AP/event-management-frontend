@@ -88,4 +88,4 @@ type UserCertificate = {
   eventId: string;
 };
 
-type APIStatus = "IDLE" | "SETTING_UP" | "LOADING";
+type APIStatus = "IDLE" | "SETTING_UP" | "LOADING" | "FETCHING";

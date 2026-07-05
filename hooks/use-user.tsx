@@ -63,7 +63,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<APIStatus>("IDLE");
 
   const getRegistrations = useCallback(async () => {
-    setStatus("LOADING");
+    setStatus("FETCHING");
     const { data } = await api.get(`${API_URL}/registrations`);
     if (data.success) {
       setStatus("IDLE");
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   const getEvents = useCallback(async () => {
-    setStatus("LOADING");
+    setStatus("FETCHING");
     const { data } = await api.get(`${API_URL}/events`);
     if (data.success) {
       setStatus("IDLE");
@@ -104,7 +104,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getAnalytics = useCallback(async () => {
-    setStatus("LOADING");
+    setStatus("FETCHING");
     const { data } = await api.get(`${API_URL}/analytics`);
     if (data.success) {
       setStatus("IDLE");
@@ -119,7 +119,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const createEvent = useCallback(
     async (value: EventForm) => {
       if (!user) return;
-      setStatus("LOADING");
+      setStatus("FETCHING");
       try {
         const { data } = await api.post(`${API_URL}/events`, {
           userId: user.id,
@@ -149,7 +149,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const cancelEvent = useCallback(
     async (eventId: string) => {
       if (!user) return;
-      setStatus("LOADING");
+      setStatus("FETCHING");
       const { data } = await api.delete(`${API_URL}/events/${eventId}`);
       setStatus("IDLE");
       return data.success;
@@ -160,7 +160,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const updateEvent = useCallback(
     async (value: EventUpdate) => {
       if (!user) return;
-      setStatus("LOADING");
+      setStatus("FETCHING");
       try {
         const { id: _, ...formValue } = value;
         const { data } = await api.put(
@@ -191,7 +191,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const registerEvent = useCallback(
     async (eventId: string) => {
       if (!user) return;
-      setStatus("LOADING");
+      setStatus("FETCHING");
       const { data } = await api.post(`${API_URL}/events/${eventId}`);
       setStatus("IDLE");
       return data.success;
@@ -202,7 +202,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const setAttended = useCallback(
     async (registerId: string) => {
       if (!user) return;
-      setStatus("LOADING");
+      setStatus("FETCHING");
       const { data } = await api.put(`${API_URL}/registrations/${registerId}`);
       setStatus("IDLE");
       return data.success;
@@ -211,7 +211,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getCertificates = useCallback(async () => {
-    setStatus("LOADING");
+    setStatus("FETCHING");
     const { data } = await api.get(`${API_URL}/certificates`);
     if (data.success) {
       setStatus("IDLE");

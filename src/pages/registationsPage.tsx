@@ -50,6 +50,7 @@ import {
   sortRows,
   type SortConfig,
 } from "@/lib/data-table";
+import { toast } from "sonner";
 
 export const RegistrationsPage = () => {
   const { getRegistrations, cancelEvent, user, status } = useUser();
@@ -176,10 +177,13 @@ export const RegistrationsPage = () => {
               <DropdownMenuItem
                 variant={"destructive"}
                 onClick={async () => {
-                  const canceled = await cancelEvent(row.original.id);
-                  if (canceled) {
+                  const cancelled = await cancelEvent(row.original.id);
+                  if (cancelled) {
                     fetchRegistrations();
+                    toast.success("Registration was successfully cancelled!");
+                    return;
                   }
+                  toast.error("Failed to cancel registration!");
                 }}
               >
                 Cancel

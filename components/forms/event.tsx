@@ -13,6 +13,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   title: z.string().min(3, "Min 3 Chars"),
@@ -45,7 +47,8 @@ export const EventForm = ({
   update = false,
   onUpdate,
 }: EventProps) => {
-  const { createEvent, updateEvent } = useUser();
+  const { createEvent, updateEvent, status } = useUser();
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: value,
@@ -56,8 +59,13 @@ export const EventForm = ({
       const created = update
         ? await updateEvent(value as EventUpdate)
         : await createEvent(value as EventForm);
-      if (created && onUpdate) {
-        onUpdate();
+      if (!created) toast.error("Failed to Organize Event!");
+      if (update) {
+        if (created) toast.success("Event updated successfully!");
+        onUpdate && onUpdate();
+      } else {
+        if (created) toast.success("Event created successfully!");
+        navigate("/events");
       }
     },
   });
@@ -201,7 +209,12 @@ export const EventForm = ({
           />
         )}
       </FieldGroup>
-      <Button className="my-4 w-full" size={"lg"} type="submit">
+      <Button
+        disabled={status !== "IDLE"}
+        className="my-4 w-full"
+        size={"lg"}
+        type="submit"
+      >
         {update ? "Update Event" : "Organize Event"}
       </Button>
     </form>

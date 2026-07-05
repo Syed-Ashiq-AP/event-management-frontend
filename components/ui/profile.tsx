@@ -12,7 +12,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { Skeleton } from "./skeleton";
 export const Profile = () => {
   const { user, logOut, status } = useUser();
-  if (status !== "IDLE")
+  if (!["IDLE", "FETCHING"].includes(status))
     return <Skeleton className="size-8 bg-gray-300 rounded-full" />;
   if (!user) return;
   const imageUrl = user.image ?? "";

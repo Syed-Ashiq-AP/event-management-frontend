@@ -136,11 +136,6 @@ export const OrganizerEvents = () => {
       header: "Title",
     },
     {
-      accessorKey: "user.name",
-      header: "Organizer",
-      cell: ({ row }) => row.original.user.name,
-    },
-    {
       accessorKey: "eventDate",
       header: "Date",
       cell: ({ row }) => {
@@ -207,8 +202,7 @@ export const OrganizerEvents = () => {
                   <DialogHeader>
                     <DialogTitle>Event Attendance</DialogTitle>
                     <DialogDescription>
-                      Use Mobile Browser to access web cam and scan QR
-                      Codes{" "}
+                      Use Mobile Browser to access web cam and scan QR Codes
                     </DialogDescription>
                   </DialogHeader>
                   <Scanner
@@ -232,10 +226,13 @@ export const OrganizerEvents = () => {
               <DropdownMenuItem
                 variant={"destructive"}
                 onClick={async () => {
-                  const canceled = await cancelEvent(row.original.id);
-                  if (canceled) {
+                  const cancelled = await cancelEvent(row.original.id);
+                  if (cancelled) {
                     fetchEvents();
+                    toast.success("Event has been cancelled!");
+                    return;
                   }
+                  toast.error("Failed to cancel the Event!");
                 }}
               >
                 Cancel
