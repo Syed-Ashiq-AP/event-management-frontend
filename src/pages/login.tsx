@@ -247,7 +247,7 @@ export const LoginPage = () => {
                 Log in
               </Button>
               <p className="text-center text-sm text-muted-foreground">
-                Already signed up?{" "}
+                Don't have an account?{" "}
                 <Link
                   to="/sign-up"
                   className="font-medium text-foreground underline underline-offset-4"

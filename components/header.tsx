@@ -55,8 +55,8 @@ export const Header = () => {
                 <a
                   href={href}
                   className={cn(
-                    "hover:text-foreground text-muted-foreground transition-all",
-                    pathname === href && "text-foreground",
+                    "hover:text-foreground text-muted-foreground transition-all p-2 rounded-sm",
+                    pathname === href && "text-white bg-black",
                   )}
                 >
                   {label}
@@ -79,15 +79,15 @@ export const Header = () => {
                   }
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="w-max">
                 <DropdownMenuLabel>Menu</DropdownMenuLabel>
                 {Menu[user.role].map(({ label, href }, i) => (
                   <DropdownMenuItem key={i}>
                     <a
                       href={href}
                       className={cn(
-                        "hover:text-foreground text-muted-foreground transition-all",
-                        pathname === href && "text-foreground",
+                        "hover:text-foreground transition-all p-2 rounded-sm",
+                        pathname === href && "text-white bg-black",
                       )}
                     >
                       {label}

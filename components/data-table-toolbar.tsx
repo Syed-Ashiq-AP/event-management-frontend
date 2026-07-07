@@ -75,7 +75,7 @@ export const DataTableToolbar = ({
             className="h-7 px-3 text-xs"
             onClick={() => onSortDirectionChange("asc")}
           >
-            Asc
+            Ascending
           </Button>
           <Button
             type="button"
@@ -83,7 +83,7 @@ export const DataTableToolbar = ({
             className="h-7 px-3 text-xs"
             onClick={() => onSortDirectionChange("desc")}
           >
-            Desc
+            Descending
           </Button>
         </div>
       </div>

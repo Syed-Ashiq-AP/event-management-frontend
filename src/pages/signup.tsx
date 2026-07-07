@@ -268,7 +268,7 @@ export const SignUpPage = () => {
                 Sign Up
               </Button>
               <p className="text-center text-sm text-muted-foreground">
-                Already logged in?{" "}
+                Already have an?{" "}
                 <Link
                   to="/sign-in"
                   className="font-medium text-foreground underline underline-offset-4"
